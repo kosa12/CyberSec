@@ -201,20 +201,12 @@ class CIFF:
 
             # read the header size
             h_size = ciff_file.read(8)
-            # TODO: h_size must contain 8 bytes. If not, raise Exception
-            #if len(____) != ____:
-            #    raise ____
+            if len(h_size) != 8:
+                raise Exception("File too short: could not read header size")
             bytes_read += 8
-            # interpret the bytes as an 8-byte-long integer
-            # unpack returns a list
-            # HINT: check the "q" format specifier!
-            # HINT: Does it fit our purposes?
             new_ciff.header_size = struct.unpack("q", h_size)[0]
-            # the header size must be in [38, 2^64 - 1]
-            # TODO: check the value range. If not in range, raise Exception
-            #if new_ciff.header_size < ____ \
-            #        or new_ciff.header_size > ____:
-            #    ____
+            if new_ciff.header_size < 38 or new_ciff.header_size > 2**64 - 1:
+                raise Exception("Header size out of valid range")
 
             # read the content size
             c_size = ciff_file.read(8)
