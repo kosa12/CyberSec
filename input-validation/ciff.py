@@ -187,112 +187,112 @@ class CIFF:
         # TODO: surround the parsing code with a try-except block and
         # TODO: set the is_valid property to False
         # TODO: if an Exception has been raised
-        #try:
-        with open(file_path, "rb") as ciff_file:
-            # read the magic bytes
-            magic = ciff_file.read(4)
-            if len(magic) != 4:
-                raise Exception("File too short: could not read magic bytes")
-            bytes_read += 4
-            new_ciff.magic = magic.decode('ascii')
-            if new_ciff.magic != "CIFF":
-                new_ciff.is_valid = False
-                raise Exception("Invalid magic bytes")
+        try:
+            with open(file_path, "rb") as ciff_file:
+                # read the magic bytes
+                magic = ciff_file.read(4)
+                if len(magic) != 4:
+                    raise Exception("File too short: could not read magic bytes")
+                bytes_read += 4
+                new_ciff.magic = magic.decode('ascii')
+                if new_ciff.magic != "CIFF":
+                    new_ciff.is_valid = False
+                    raise Exception("Invalid magic bytes")
 
-            # read the header size
-            h_size = ciff_file.read(8)
-            if len(h_size) != 8:
-                raise Exception("File too short: could not read header size")
-            bytes_read += 8
-            new_ciff.header_size = struct.unpack("q", h_size)[0]
-            if new_ciff.header_size < 38 or new_ciff.header_size > 2**64 - 1:
-                raise Exception("Header size out of valid range")
+                # read the header size
+                h_size = ciff_file.read(8)
+                if len(h_size) != 8:
+                    raise Exception("File too short: could not read header size")
+                bytes_read += 8
+                new_ciff.header_size = struct.unpack("q", h_size)[0]
+                if new_ciff.header_size < 38 or new_ciff.header_size > 2**64 - 1:
+                    raise Exception("Header size out of valid range")
 
-            # read the content size
-            c_size = ciff_file.read(8)
-            if len(c_size) != 8:
-                raise Exception("File too short: could not read content size")
-            bytes_read += 8
-            new_ciff.content_size = struct.unpack("q", c_size)[0]
-            if new_ciff.content_size < 0 or new_ciff.content_size > 2**64 - 1:
-                raise Exception("Content size out of valid range")
+                # read the content size
+                c_size = ciff_file.read(8)
+                if len(c_size) != 8:
+                    raise Exception("File too short: could not read content size")
+                bytes_read += 8
+                new_ciff.content_size = struct.unpack("q", c_size)[0]
+                if new_ciff.content_size < 0 or new_ciff.content_size > 2**64 - 1:
+                    raise Exception("Content size out of valid range")
 
-            # read the width
-            width = ciff_file.read(8)
-            if len(width) != 8:
-                raise Exception("File too short: could not read width")
-            bytes_read += 8
-            new_ciff.width = struct.unpack("q", width)[0]
-            if new_ciff.width < 0 or new_ciff.width > 2**64 - 1:
-                raise Exception("Width out of valid range")
+                # read the width
+                width = ciff_file.read(8)
+                if len(width) != 8:
+                    raise Exception("File too short: could not read width")
+                bytes_read += 8
+                new_ciff.width = struct.unpack("q", width)[0]
+                if new_ciff.width < 0 or new_ciff.width > 2**64 - 1:
+                    raise Exception("Width out of valid range")
 
-            # read the height
-            height = ciff_file.read(8)
-            if len(height) != 8:
-                raise Exception("File too short: could not read height")
-            bytes_read += 8
-            new_ciff.height = struct.unpack("q", height)[0]
-            if new_ciff.height < 0 or new_ciff.height > 2**64 - 1:
-                raise Exception("Height out of valid range")
+                # read the height
+                height = ciff_file.read(8)
+                if len(height) != 8:
+                    raise Exception("File too short: could not read height")
+                bytes_read += 8
+                new_ciff.height = struct.unpack("q", height)[0]
+                if new_ciff.height < 0 or new_ciff.height > 2**64 - 1:
+                    raise Exception("Height out of valid range")
 
-            if new_ciff.content_size != new_ciff.width * new_ciff.height * 3:
-                raise Exception("Content size doesn't match dimensions")
+                if new_ciff.content_size != new_ciff.width * new_ciff.height * 3:
+                    raise Exception("Content size doesn't match dimensions")
 
-            # read the name of the image character by character
-            caption = ""
-            c = ciff_file.read(1)
-            if len(c) != 1:
-                raise Exception("File too short: could not read caption")
-            bytes_read += 1
-            char = c.decode('ascii')
-            while char != '\n':
-                caption += char
+                # read the name of the image character by character
+                caption = ""
                 c = ciff_file.read(1)
                 if len(c) != 1:
                     raise Exception("File too short: could not read caption")
                 bytes_read += 1
                 char = c.decode('ascii')
-            new_ciff.caption = caption
+                while char != '\n':
+                    caption += char
+                    c = ciff_file.read(1)
+                    if len(c) != 1:
+                        raise Exception("File too short: could not read caption")
+                    bytes_read += 1
+                    char = c.decode('ascii')
+                new_ciff.caption = caption
 
-            # read all the tags
-            tags = []
-            tag = ""
-            while bytes_read != new_ciff.header_size:
-                c = ciff_file.read(1)
-                if len(c) != 1:
-                    raise Exception("Invalid image: could not read tag")
-                bytes_read += 1
-                char = c.decode('ascii')
-                if char == '\n':
-                    raise Exception("Tags cannot contain newline")
-                tag += char
-                if char == '\0':
-                    tags.append(tag)
-                    tag = ""
-                if bytes_read == new_ciff.header_size and char != '\0':
-                    raise Exception("Header must end with null terminator")
+                # read all the tags
+                tags = []
+                tag = ""
+                while bytes_read != new_ciff.header_size:
+                    c = ciff_file.read(1)
+                    if len(c) != 1:
+                        raise Exception("Invalid image: could not read tag")
+                    bytes_read += 1
+                    char = c.decode('ascii')
+                    if char == '\n':
+                        raise Exception("Tags cannot contain newline")
+                    tag += char
+                    if char == '\0':
+                        tags.append(tag)
+                        tag = ""
+                    if bytes_read == new_ciff.header_size and char != '\0':
+                        raise Exception("Header must end with null terminator")
 
-            for t in tags:
-                if not t.endswith('\0'):
-                    raise Exception("Invalid tag format")
+                for t in tags:
+                    if not t.endswith('\0'):
+                        raise Exception("Invalid tag format")
 
-            new_ciff.tags = tags
-            
-            # read the pixels
-            while bytes_read < new_ciff.header_size + new_ciff.content_size:
-                c = ciff_file.read(3)
-                if len(c) != 3:
-                    raise Exception("File too short: could not read pixel data")
-                bytes_read += 3
-                pixel = struct.unpack("BBB", c)
-                new_ciff.pixels.append(pixel)
+                new_ciff.tags = tags
+                
+                # read the pixels
+                while bytes_read < new_ciff.header_size + new_ciff.content_size:
+                    c = ciff_file.read(3)
+                    if len(c) != 3:
+                        raise Exception("File too short: could not read pixel data")
+                    bytes_read += 3
+                    pixel = struct.unpack("BBB", c)
+                    new_ciff.pixels.append(pixel)
 
-            # Check for extra data
-            extra = ciff_file.read(1)
-            if extra:
-                raise Exception("Extra data after pixel content")
+                # Check for extra data
+                extra = ciff_file.read(1)
+                if extra:
+                    raise Exception("Extra data after pixel content")
 
-        #except Exception as e:
-        #    new_ciff.is_valid = False
+        except Exception as e:
+            new_ciff.is_valid = False
 
         return new_ciff
