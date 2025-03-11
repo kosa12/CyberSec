@@ -279,20 +279,18 @@ class CIFF:
             new_ciff.tags = tags
             
             # read the pixels
-            while bytes_read < new_ciff.header_size+new_ciff.content_size:
+            while bytes_read < new_ciff.header_size + new_ciff.content_size:
                 c = ciff_file.read(3)
-                # TODO: check if c contains 3 bytes
-                #___
-                #    ____
+                if len(c) != 3:
+                    raise Exception("File too short: could not read pixel data")
                 bytes_read += 3
                 pixel = struct.unpack("BBB", c)
                 new_ciff.pixels.append(pixel)
 
-            # we should have reached the end of the file
-            # TODO: try to read a byte. If successful, raise Exception
-            #____
-            #____
-            #    ____
+            # Check for extra data
+            extra = ciff_file.read(1)
+            if extra:
+                raise Exception("Extra data after pixel content")
 
         #except Exception as e:
         #    new_ciff.is_valid = False
