@@ -255,35 +255,26 @@ class CIFF:
             new_ciff.caption = caption
 
             # read all the tags
-            tags = list()
-            # read until the end of the header
+            tags = []
             tag = ""
             while bytes_read != new_ciff.header_size:
                 c = ciff_file.read(1)
-                # TODO: check if c contains 1 byte
                 if len(c) != 1:
-                    raise Exception("Invalid image")
+                    raise Exception("Invalid image: could not read tag")
                 bytes_read += 1
                 char = c.decode('ascii')
-                # tags should not contain '\n'
-                # TODO: char must not be a '\n'
-                #if ____ == ____:
-                #    ____
-                # tags are separated by terminating nulls
+                if char == '\n':
+                    raise Exception("Tags cannot contain newline")
                 tag += char
                 if char == '\0':
                     tags.append(tag)
                     tag = ""
-                # the very last character in the header must be a '\0'
-                # TODO: check the last character of the header
-                #if (bytes_read == ____) and ____:
-                #    ____
-            
-            # all tags must end with '\0'
-            # TODO: check the end of each tag for the '\0'
-            #for tag in tags:
-            #    if tag[____] != ____:
-            #        ____
+                if bytes_read == new_ciff.header_size and char != '\0':
+                    raise Exception("Header must end with null terminator")
+
+            for t in tags:
+                if not t.endswith('\0'):
+                    raise Exception("Invalid tag format")
 
             new_ciff.tags = tags
             
