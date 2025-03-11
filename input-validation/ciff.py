@@ -294,5 +294,6 @@ class CIFF:
 
         except Exception as e:
             new_ciff.is_valid = False
+            print(f"Failed to parse CIFF file: {e}")
 
         return new_ciff
