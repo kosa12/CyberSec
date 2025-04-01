@@ -238,6 +238,10 @@ class CIFF:
                 # the width must be in [0, 2^64 - 1]
                 if new_ciff.width < 0 or new_ciff.width > (2**64)-1:
                     raise Exception("Invalid width value")
+                
+                if new_ciff.width == (2**64)-1:
+                    new_ciff.is_valid = False
+                    raise Exception("Invalid width: width is ULONG_MAX")
 
                 # read the height
                 height = ciff_file.read(8)
