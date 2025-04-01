@@ -251,8 +251,10 @@ class CIFF:
                 # the header size must be in [0, 2^64 - 1]
                 if new_ciff.height < 0 or new_ciff.height > (2**64)-1:
                     raise Exception("Invalid hight value")
-
-                #TODO: maybe something is missing here
+                
+                if new_ciff.height == (2**64)-1:
+                    new_ciff.is_valid = False
+                    raise Exception("Invalid height: height is ULONG_MAX")
 
                 # read the name of the image character by character
                 caption = ""

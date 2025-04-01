@@ -1,3 +1,4 @@
 myenv/
 ciff-viewer/src/__pycache__/
 /demo/__pycache__/
+ciff-viewer/__pycache__/
