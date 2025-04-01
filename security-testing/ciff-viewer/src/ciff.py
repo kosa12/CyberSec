@@ -214,6 +214,10 @@ class CIFF:
                 # interpret the bytes as an 8-byte-long integer
                 # unpack returns a list
                 new_ciff.header_size = struct.unpack("Q", h_size)[0]
+
+                if new_ciff.header_size == (2**64)-1:
+                    new_ciff.is_valid = False
+                    raise Exception("Invalid header_size: header_size is ULONG_MAX")
                 
                 #TODO: maybe something is missing here
 
