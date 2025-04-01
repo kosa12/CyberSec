@@ -1,5 +1,5 @@
 import struct
-from typing import List, Tuple, Any
+from typing import List, Tuple, Optional
 import logging
 
 
@@ -11,14 +11,14 @@ class CIFF:
     """
 
     def __init__(self, 
-                 magic_chars = "CIFF", 
-                 header_size_long = 0, 
-                 content_size_long = 0, 
-                 width_long = 0, 
-                 height_long = 0, 
-                 caption_string = "", 
-                 tags_list = None, 
-                 pixels_list = None
+                 magic_chars: str = "CIFF", 
+                 header_size_long: int= 0, 
+                 content_size_long: int = 0, 
+                 width_long: int = 0, 
+                 height_long: int = 0, 
+                 caption_string: str = "", 
+                 tags_list: Optional[List[str]] = None, 
+                 pixels_list: Optional[List[Tuple[int, int, int]]] = None
                  ):
         """
         Constructor for CIFF images
@@ -66,7 +66,7 @@ class CIFF:
         return self._is_valid
 
     @is_valid.setter
-    def is_valid(self, value):
+    def is_valid(self, value: bool): 
         self._is_valid = value
 
     @property
@@ -79,7 +79,7 @@ class CIFF:
         return self._magic
 
     @magic.setter
-    def magic(self, value):
+    def magic(self, value: str):
         self._magic = value
 
     @property
@@ -92,7 +92,7 @@ class CIFF:
         return self._header_size
 
     @header_size.setter
-    def header_size(self, value):
+    def header_size(self, value: int):
         self._header_size = value
 
     @property
@@ -105,7 +105,7 @@ class CIFF:
         return self._content_size
 
     @content_size.setter
-    def content_size(self, value):
+    def content_size(self, value: int):
         """
         Setter function for the content size
         """
@@ -121,7 +121,7 @@ class CIFF:
         return self._width
 
     @width.setter
-    def width(self, value):
+    def width(self, value: int):
         self._width = value
 
     @property
@@ -134,7 +134,7 @@ class CIFF:
         return self._height
 
     @height.setter
-    def height(self, value):
+    def height(self, value: int):
         self._height = value
 
     @property
@@ -147,7 +147,7 @@ class CIFF:
         return self._caption
 
     @caption.setter
-    def caption(self, value):
+    def caption(self, value: str):
         self._caption = value
 
     @property
@@ -160,7 +160,7 @@ class CIFF:
         return self._tags
 
     @tags.setter
-    def tags(self, value):
+    def tags(self, value: List[str]):
         self._tags = value
 
     @property
@@ -173,7 +173,7 @@ class CIFF:
         return self._pixels
 
     @pixels.setter
-    def pixels(self, value):
+    def pixels(self, value: List[Tuple[int, int, int]]):
         self._pixels = value
 
     #
