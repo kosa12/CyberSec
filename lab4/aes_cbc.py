@@ -15,7 +15,7 @@ ifile_name = ''
 ofile_name = ''
 
 #  python3 aes_cbc.py -p adishamir -i test_plaintext_1.txt -o output.txt
-
+#  python3 aes_cbc.py -d -p  ronrivest -i test_ciphertext_2.crypted -o output.txt
 try:
     opts, args = getopt.getopt(sys.argv[1:], 'hedp:i:o:')
 except getopt.GetoptError:
