@@ -13,7 +13,7 @@ TEST = True
 # --------------------
 
 # python3 hybrid.py -e -p test_pubkey.pem -i test_plaintext_3.txt -o output.txt
-
+# python3 hybrid.py -d -s test_keypair.pem -p test_pubkey.pem -i test_ciphertext_4.crypted -o decrypted_output.txt
 def save_publickey(pubkey, pubkeyfile):
     with open(pubkeyfile, 'wb') as f:
         f.write(pubkey.export_key(format='PEM'))
